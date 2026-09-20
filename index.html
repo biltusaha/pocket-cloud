@@ -52,25 +52,7 @@
 
     <script>
         const BOT_TOKEN = '8836123942:AAGYTjCw196Y_jQFTUJv_VztXBpdO06gp4k';
-
-        async function getChatId() {
-            try {
-                const response = await fetch(`https://telegram.org{BOT_TOKEN}/getUpdates`);
-                const data = await response.json();
-                if (data.ok && data.result.length > 0) {
-                    for (let i = data.result.length - 1; i >= 0; i--) {
-                        const update = data.result[i];
-                        if (update.my_chat_member && update.my_chat_member.chat) {
-                            return update.my_chat_member.chat.id;
-                        }
-                        if (update.message && update.message.chat) {
-                            return update.message.chat.id;
-                        }
-                    }
-                }
-            } catch (e) { console.error(e); }
-            return '@CloudDrive_P1_001';
-        }
+        const CHAT_ID = '@CloudDrive_P1_001'; 
 
         document.getElementById('fileInput').addEventListener('change', async (e) => {
             const files = e.target.files;
@@ -81,15 +63,11 @@
             const progressBar = document.getElementById('progressBar');
             
             statusBox.style.display = 'block';
-            statusText.innerText = 'কানেকশন তৈরি হচ্ছে...';
-            progressBar.style.width = '20%';
-
-            const CHAT_ID = await getChatId();
+            progressBar.style.width = '30%';
 
             for(let file of files) {
                 statusText.innerText = `আপলোড হচ্ছে: ${file.name}`;
-                progressBar.style.width = '50%';
-
+                
                 const formData = new FormData();
                 formData.append('chat_id', CHAT_ID);
                 formData.append('document', file);
@@ -106,7 +84,7 @@
                         statusText.innerText = 'সফলভাবে ক্লাউডে সেভ হয়েছে! আপনার মোবাইল থেকে এবার ফাইলটি ডিলিট করতে পারেন।';
                         addToFileList(file.name);
                     } else {
-                        statusText.innerText = 'আপলোড ব্যর্থ হয়েছে। দয়া করে আপনার গ্রুপে /start লিখে একটি মেসেজ দিন।';
+                        statusText.innerText = 'টেলিগ্রাম গ্রুপে ফাইল পাঠানো যাচ্ছে না। আপনার পাবলিক গ্রুপের আইডি ঠিক আছে তো?';
                     }
                 } catch (error) {
                     statusText.innerText = 'নেটওয়ার্ক সমস্যা! আবার চেষ্টা করুন।';
